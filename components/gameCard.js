@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Heading, Text, Flex, Button, Divider } from '@chakra-ui/react'
+import { Heading, Text, Flex, Button, Badge, Box } from '@chakra-ui/react'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 
 const GameCard = ({
@@ -7,33 +7,37 @@ const GameCard = ({
   description,
   open_giveaway_url,
   image,
-  platform,
+  platforms,
 }) => {
   return (
     <Flex
-      m="1rem"
-      bg="gray.900"
-      borderColor="gray.500"
-      borderRadius="5px"
+      border="1px"
+      borderColor="gray.700"
+      borderRadius="lg"
       direction="column"
       w="100%"
       boxShadow="base"
     >
-      <Image
-        src={image}
-        alt="Picture of the author"
-        width={460}
-        height={215}
-      ></Image>
+      <a target="_blank" href={open_giveaway_url} rel="noreferrer">
+        <Box borderRadius="lg" overflow="hidden">
+          <Image
+            borderRadius="full"
+            src={image}
+            alt="Picture of the author"
+            width={460}
+            height={215}
+          ></Image>
+        </Box>
+      </a>
 
-      <Heading as="h3" size="md" m="1rem">
+      <Heading as="h3" size="md" m="1rem" noOfLines={1}>
         {title}
       </Heading>
-      <Text fontSize="sm" m="1rem" noOfLines={4}>
+      <Badge fontSize="0.8rem" mx={4}>
+        {platforms}
+      </Badge>
+      <Text fontSize="sm" m="1rem" noOfLines={4} flexGrow="1">
         {description}
-      </Text>
-      <Text fontSize="0.8rem" m="1rem" flexGrow="1">
-        {platform}
       </Text>
 
       <Button m="1rem" rightIcon={<ExternalLinkIcon />} variant="outline">
