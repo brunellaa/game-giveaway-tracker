@@ -1,25 +1,35 @@
 import Head from 'next/head'
 import Hero from '../components/hero'
 import GameCard from '../components/gameCard'
-import { Container, Flex, Grid } from '@chakra-ui/react'
+import Footer from '../components/footer'
+import { Container, Flex, SimpleGrid } from '@chakra-ui/react'
 
 export async function getServerSideProps() {
+  // fetch gamerpower api for giveaways
   const res = await fetch(
     `https://www.gamerpower.com/api/giveaways?platform=pc`
   )
+  // responte to json
   const data = await res.json()
+  // if there is no data return not found
   if (!data) {
     return {
       notFound: true,
     }
   }
 
+  // filter out dlc and lootboxes
+  const games = data.filter(items => {
+    return items.type === 'Full Game'
+  })
+
+  // pass to component as props
   return {
-    props: { data }, // will be passed to the page component as props
+    props: { games },
   }
 }
 
-export default function Home({ data }) {
+export default function Home({ games }) {
   return (
     <div>
       <Head>
@@ -34,16 +44,21 @@ export default function Home({ data }) {
       <Hero />
       <Flex justifyContent="center">
         <Container maxW="container.xl" m="2rem 0">
-          <Grid alignContent="center" templateColumns="repeat(4, 2fr)" gap={6}>
-            {data
-              ? data.map(({ id, ...allProps }) => (
+          <SimpleGrid
+            alignContent="center"
+            // templateColumns={(['repeat(2, 1fr)'], ['repeat(4, 2fr)'])}
+            minChildWidth="250px"
+            gap={6}
+          >
+            {games
+              ? games.map(({ id, ...allProps }) => (
                   <GameCard {...allProps} key={id}></GameCard>
                 ))
               : null}
-          </Grid>
+          </SimpleGrid>
         </Container>
       </Flex>
-      <footer>footer</footer>
+      <Footer />
     </div>
   )
 }

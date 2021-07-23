@@ -3,18 +3,23 @@ import { Flex, Text, Center, Container } from '@chakra-ui/react'
 
 const Hero = () => {
   return (
-    <Flex bg="black" h="400px">
+    <Flex bg="black" h="200px">
       <Container maxW="container.xl">
-        <Center h="100%">
+        <Flex
+          height="100%"
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <Text
             bgGradient="linear(to-l, #7928CA,#FF0080)"
             bgClip="text"
             fontSize="6xl"
             fontWeight="extrabold"
           >
-            PC Game giveaway tracker
+            PC Giveaways
           </Text>
-        </Center>
+        </Flex>
       </Container>
     </Flex>
   )
