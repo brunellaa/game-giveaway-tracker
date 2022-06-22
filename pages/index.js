@@ -1,53 +1,45 @@
-import Head from 'next/head'
-import Hero from '../components/hero'
-import GameCard from '../components/gameCard'
-import Footer from '../components/footer'
-import { Container, Flex, SimpleGrid } from '@chakra-ui/react'
+import Head from 'next/head';
+import Hero from '../components/hero';
+import GameCard from '../components/gameCard';
+import Footer from '../components/footer';
+import { Container, Flex, SimpleGrid } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
 
-export async function getServerSideProps() {
-  // fetch gamerpower api for giveaways
-  const res = await fetch(
-    `https://www.gamerpower.com/api/giveaways?platform=pc`
-  )
-  // responte to json
-  const data = await res.json()
-  // if there is no data return not found
-  if (!data) {
-    return {
-      notFound: true,
-    }
-  }
+export default function Home() {
+  const [games, setGames] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
-  // filter out dlc and lootboxes
-  const games = data.filter(items => {
-    return items.type === 'Full Game'
-  })
-
-  // pass to component as props
-  return {
-    props: { games },
-  }
-}
-
-export default function Home({ games }) {
+  useEffect(() => {
+    setLoading(true);
+    fetch('https://www.gamerpower.com/api/giveaways?platform=pc')
+      .then(res => res.json())
+      .then(data => {
+        setGames(
+          data.filter(items => {
+            return items.type === 'Full Game';
+          })
+        );
+        setLoading(false);
+      });
+  }, []);
   return (
     <div>
       <Head>
         <title>PC Giveaway tracker</title>
         <meta
-          name="never miss another free pc game"
-          content="PC game giveaway tracker"
+          name='never miss another free pc game'
+          content='PC game giveaway tracker'
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <Hero />
-      <Flex justifyContent="center">
-        <Container maxW="container.xl" m="2rem 0">
+      <Flex justifyContent='center'>
+        <Container maxW='container.xl' m='2rem 0'>
           <SimpleGrid
-            alignContent="center"
+            alignContent='center'
             // templateColumns={(['repeat(2, 1fr)'], ['repeat(4, 2fr)'])}
-            minChildWidth="250px"
+            minChildWidth='250px'
             gap={6}
           >
             {games
@@ -60,5 +52,5 @@ export default function Home({ games }) {
       </Flex>
       <Footer />
     </div>
-  )
+  );
 }
