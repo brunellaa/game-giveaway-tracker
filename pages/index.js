@@ -16,12 +16,13 @@ export default function Home() {
       .then(data => {
         setGames(
           data.filter(items => {
-            return items.type === 'Full Game';
+            return items.type === 'Game';
           })
         );
         setLoading(false);
       });
   }, []);
+
   return (
     <div>
       <Head>
