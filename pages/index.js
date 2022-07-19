@@ -1,39 +1,10 @@
-import Head from 'next/head';
-import Hero from '../components/hero';
-import GameCard from '../components/gameCard';
-import Footer from '../components/footer';
 import { Container, Flex, SimpleGrid } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import Footer from '../components/footer';
+import GameCard from '../components/gameCard';
+import Hero from '../components/hero';
 
-export default function Home() {
-  const [games, setGames] = useState(null);
-  const [isLoading, setLoading] = useState(false);
-
-  const options = {
-    method: 'GET',
-    headers: {
-      'X-RapidAPI-Key': process.env.GAMERPOWER_RAPIDAPI_KEY,
-      'X-RapidAPI-Host': 'gamerpower.p.rapidapi.com',
-    },
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(
-      'https://gamerpower.p.rapidapi.com/api/filter?platform=epic-games-store.steam.android&type=game.loot',
-      options
-    )
-      .then(res => res.json())
-      .then(data => {
-        setGames(
-          data.filter(items => {
-            return items.type === 'Game';
-          })
-        );
-        setLoading(false);
-      });
-  }, []);
-
+export default function Home({ games }) {
   return (
     <div>
       <Head>
@@ -49,15 +20,45 @@ export default function Home() {
       <Flex justifyContent='center'>
         <Container maxW='container.xl' m='2rem 0'>
           <SimpleGrid alignContent='center' minChildWidth='250px' gap={6}>
-            {games
-              ? games.map(({ id, ...allProps }) => (
-                  <GameCard {...allProps} key={id}></GameCard>
-                ))
-              : null}
+            {games &&
+              games.map(({ id, ...allProps }) => (
+                <GameCard {...allProps} key={id}></GameCard>
+              ))}
           </SimpleGrid>
         </Container>
       </Flex>
       <Footer />
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': process.env.GAMERPOWER_RAPIDAPI_KEY,
+      'X-RapidAPI-Host': 'gamerpower.p.rapidapi.com',
+    },
+  };
+
+  const res = await fetch(
+    'https://gamerpower.p.rapidapi.com/api/filter?platform=epic-games-store.steam.android&type=game.loot',
+    options
+  );
+
+  const data = await res.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const games = data.filter(items => {
+    return items.type === 'Game';
+  });
+
+  return {
+    props: { games },
+  };
 }
