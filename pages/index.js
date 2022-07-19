@@ -9,9 +9,20 @@ export default function Home() {
   const [games, setGames] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': process.env.GAMERPOWER_RAPIDAPI_KEY,
+      'X-RapidAPI-Host': 'gamerpower.p.rapidapi.com',
+    },
+  };
+
   useEffect(() => {
     setLoading(true);
-    fetch('https://www.gamerpower.com/api/giveaways?platform=pc')
+    fetch(
+      'https://gamerpower.p.rapidapi.com/api/filter?platform=epic-games-store.steam.android&type=game.loot',
+      options
+    )
       .then(res => res.json())
       .then(data => {
         setGames(
@@ -37,12 +48,7 @@ export default function Home() {
       <Hero />
       <Flex justifyContent='center'>
         <Container maxW='container.xl' m='2rem 0'>
-          <SimpleGrid
-            alignContent='center'
-            // templateColumns={(['repeat(2, 1fr)'], ['repeat(4, 2fr)'])}
-            minChildWidth='250px'
-            gap={6}
-          >
+          <SimpleGrid alignContent='center' minChildWidth='250px' gap={6}>
             {games
               ? games.map(({ id, ...allProps }) => (
                   <GameCard {...allProps} key={id}></GameCard>
