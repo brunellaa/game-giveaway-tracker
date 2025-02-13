@@ -41,24 +41,32 @@ export async function getServerSideProps() {
     },
   };
 
-  const res = await fetch(
-    'https://gamerpower.p.rapidapi.com/api/filter?platform=epic-games-store.steam.android&type=game.loot',
-    options
-  );
+  try {
+    const res = await fetch(
+      'https://gamerpower.p.rapidapi.com/api/filter?platform=epic-games-store.steam.android&type=game.loot',
+      options
+    );
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (!data) {
+    console.log("API Response:", data);
+
+    if (!Array.isArray(data)) {
+      console.error("Unexpected API response format", data);
+      return {
+        props: { games: [] },
+      };
+    }
+
+    const games = data.filter(item => item.type === 'Game');
+
     return {
-      notFound: true,
+      props: { games },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      props: { games: [] },
     };
   }
-
-  const games = data.filter(items => {
-    return items.type === 'Game';
-  });
-
-  return {
-    props: { games },
-  };
 }
