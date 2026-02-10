@@ -14,7 +14,7 @@
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "framer-motion": "^4.1.17",
-    "next": "^15.2.3",
+    "next": "15.2.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
