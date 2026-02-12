@@ -1,6 +1,11 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['www.gamerpower.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.gamerpower.com',
+      },
+    ],
   },
 }
